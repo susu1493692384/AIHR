@@ -1,0 +1,37 @@
+[project]
+name = "resume-analyzer"
+version = "0.1.0"
+description = "AI-powered resume analysis system"
+requires-python = ">=3.9"
+dependencies = [
+    "langchain>=0.1.0",
+    "langchain-core>=0.1.0",
+    "langchain-zhipu>=0.1.0",
+    "langgraph>=0.0.0",
+    "PyPDF2>=3.0.0",
+    "python-docx>=1.0.0",
+    "streamlit>=1.28.0",
+    "python-dotenv>=1.0.0",
+    "pyyaml>=6.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["core*", "agents*", "tools*", "utils*", "prompts*", "config*", "app*"]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"

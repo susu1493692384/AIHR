@@ -989,13 +989,6 @@ class MyPrompt(BasePrompt):
 # 注册
 prompt_manager.register("my_prompt", MyPrompt())
 ```
-
-## 📖 文档
-
-- [架构分析文档](docs/ARCHITECTURE_ANALYSIS.md) - Agent架构、数据流、LLM集成
-- [PromptManager使用指南](docs/PROMPTMANAGER_USAGE.md) - Prompt配置和使用
-- [测试报告](tests/TEST_REPORT.md) - 完整测试报告
-
 ## 🤝 贡献
 
 欢迎提交 Issue 和 Pull Request！

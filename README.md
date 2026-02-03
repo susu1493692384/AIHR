@@ -37,7 +37,148 @@
     ↓
 前端展示 → 用户查看结果
 ```
+---
+## 🚀 快速开始
 
+### 方式1: 使用Streamlit前端（推荐）
+
+#### 1. 克隆项目
+
+```bash
+git clone https://github.com/susu1493692384/AIHR.git
+cd AI_HR
+```
+
+#### 2. 创建Python虚拟环境
+
+```bash
+# Python 3.9+ 必需
+python -m venv venv
+
+# 激活虚拟环境
+# Windows:
+venv\Scripts\activate
+# Linux/Mac:
+source venv/bin/activate
+```
+
+#### 3. 安装依赖
+
+```bash
+pip install -r requirements.txt
+```
+
+**依赖说明**：
+- `langchain>=0.1.0` - LangChain核心库
+- `langchain-core>=0.1.0` - LangChain核心
+- `langchain-zhipu>=0.1.0` - 智谱AI集成
+- `PyPDF2>=3.0.0` - PDF解析
+- `python-docx>=1.0.0` - Word文档解析
+- `streamlit>=1.28.0` - Web前端
+- `pyyaml>=6.0` - YAML配置解析
+
+#### 4. 配置API Key
+
+创建 `.env` 文件：
+
+```bash
+cp .env.example .env
+```
+
+编辑 `.env`，填入智谱AI API Key：
+
+```bash
+ZHIPU_API_KEY=your_api_key_here
+```
+
+**获取API Key**：访问 [智谱AI开放平台](https://open.bigmodel.cn/) 注册并获取
+
+#### 5. 运行应用
+
+```bash
+streamlit run app/streamlit_app.py
+```
+
+访问 `http://localhost:8501` 开始使用。
+
+---
+
+### 方式2: API调用
+
+```python
+import asyncio
+from langchain_zhipu import ChatZhipuAI
+from agents import OrchestratorAgent
+
+async def analyze_resume():
+    # 初始化LLM
+    llm = ChatZhipuAI(
+        model="glm-4",
+        temperature=0.3,
+        api_key="your_api_key"
+    )
+
+    # 创建OrchestratorAgent
+    orchestrator = OrchestratorAgent(llm, verbose=True)
+
+    # 准备输入数据
+    input_data = {
+        "file_path": "path/to/resume.pdf",
+        "job_requirements": "5年以上Python开发经验",
+        "report_types": ["full", "hr_summary"]
+    }
+
+    # 执行分析
+    result = await orchestrator.run(input_data)
+
+    if result["success"]:
+        print(f"总分: {result['state']['total_score']}")
+        print(f"技术能力: {result['state']['score_breakdown']['technical']}")
+    else:
+        print(f"分析失败: {result['error']}")
+
+# 运行
+asyncio.run(analyze_resume())
+```
+
+---
+
+## ⚙️ 配置说明
+
+### 评分配置 (config/scoring.yaml)
+
+修改各维度权重：
+
+```yaml
+weights:
+  technical: 0.25   # 技术能力 25%
+  experience: 0.20  # 经验背景 20%
+  project: 0.40     # 项目经验 40%
+  soft_skill: 0.15  # 软技能 15%
+```
+
+修改技能热度：
+
+```yaml
+skill_demand:
+  Python: A         # A类-热门
+  Java: B           # B类-主流
+  PHP: C            # C类-常规
+  Struts: D         # D类-传统
+```
+
+修改学校分级：
+
+```yaml
+school_tier:
+  985:
+    - 清华大学
+    - 北京大学
+    - 复旦大学
+  211:
+    - 北京理工大学
+    - 同济大学
+```
 ## 🔄 详细数据流过程
 
 ### Step 1: 简历解析 (ParsingAgent)
@@ -746,148 +887,8 @@ AI_HR2/
 └── README.md                 # 本文件
 ```
 
-## 🚀 快速开始
-
-### 方式1: 使用Streamlit前端（推荐）
-
-#### 1. 克隆项目
-
-```bash
-git clone <repository-url>
-cd AI_HR2
-```
-
-#### 2. 创建Python虚拟环境
-
-```bash
-# Python 3.9+ 必需
-python -m venv venv
-
-# 激活虚拟环境
-# Windows:
-venv\Scripts\activate
-# Linux/Mac:
-source venv/bin/activate
-```
-
-#### 3. 安装依赖
-
-```bash
-pip install -r requirements.txt
-```
-
-**依赖说明**：
-- `langchain>=0.1.0` - LangChain核心库
-- `langchain-core>=0.1.0` - LangChain核心
-- `langchain-zhipu>=0.1.0` - 智谱AI集成
-- `PyPDF2>=3.0.0` - PDF解析
-- `python-docx>=1.0.0` - Word文档解析
-- `streamlit>=1.28.0` - Web前端
-- `pyyaml>=6.0` - YAML配置解析
-
-#### 4. 配置API Key
-
-创建 `.env` 文件：
-
-```bash
-cp .env.example .env
-```
-
-编辑 `.env`，填入智谱AI API Key：
-
-```bash
-ZHIPU_API_KEY=your_api_key_here
-```
-
-**获取API Key**：访问 [智谱AI开放平台](https://open.bigmodel.cn/) 注册并获取
-
-#### 5. 运行应用
-
-```bash
-streamlit run app/streamlit_app.py
-```
-
-访问 `http://localhost:8501` 开始使用。
 
 ---
-
-### 方式2: API调用
-
-```python
-import asyncio
-from langchain_zhipu import ChatZhipuAI
-from agents import OrchestratorAgent
-
-async def analyze_resume():
-    # 初始化LLM
-    llm = ChatZhipuAI(
-        model="glm-4",
-        temperature=0.3,
-        api_key="your_api_key"
-    )
-
-    # 创建OrchestratorAgent
-    orchestrator = OrchestratorAgent(llm, verbose=True)
-
-    # 准备输入数据
-    input_data = {
-        "file_path": "path/to/resume.pdf",
-        "job_requirements": "5年以上Python开发经验",
-        "report_types": ["full", "hr_summary"]
-    }
-
-    # 执行分析
-    result = await orchestrator.run(input_data)
-
-    if result["success"]:
-        print(f"总分: {result['state']['total_score']}")
-        print(f"技术能力: {result['state']['score_breakdown']['technical']}")
-    else:
-        print(f"分析失败: {result['error']}")
-
-# 运行
-asyncio.run(analyze_resume())
-```
-
----
-
-## ⚙️ 配置说明
-
-### 评分配置 (config/scoring.yaml)
-
-修改各维度权重：
-
-```yaml
-weights:
-  technical: 0.25   # 技术能力 25%
-  experience: 0.20  # 经验背景 20%
-  project: 0.40     # 项目经验 40%
-  soft_skill: 0.15  # 软技能 15%
-```
-
-修改技能热度：
-
-```yaml
-skill_demand:
-  Python: A         # A类-热门
-  Java: B           # B类-主流
-  PHP: C            # C类-常规
-  Struts: D         # D类-传统
-```
-
-修改学校分级：
-
-```yaml
-school_tier:
-  985:
-    - 清华大学
-    - 北京大学
-    - 复旦大学
-  211:
-    - 北京理工大学
-    - 同济大学
-```
-
 ## 🧪 测试
 
 项目包含 **109个测试**，**通过率100%**。
